@@ -42,24 +42,87 @@ Ce projet sert de base solide pour une V2 (commentaires avancés, profils enrich
 
 # 📂 Architecture
 
-## Backend
-serveur/
-├── serveur.js
-├── app.js
-└── src/
-├── modeles/
-├── controleurs/
-├── routes/
-├── middlewares/
-└── validations/
+## 📂 Structure du projet
 
-## Frontend
-client/src/
-├── api/
-├── stores/
-├── pages/
-├── components/
-└── routes/
+```bash
+reseau-social-v1/
+│
+├── client/
+│   ├── src/
+│   │   ├── api/
+│   │   │   ├── axios.js
+│   │   │   ├── auth.api.js
+│   │   │   └── posts.api.js
+│   │   │
+│   │   ├── components/
+│   │   │   ├── FormulairePost.jsx
+│   │   │   └── PostCard.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Connexion.jsx
+│   │   │   ├── Inscription.jsx
+│   │   │   └── Feed.jsx
+│   │   │
+│   │   ├── routes/
+│   │   │   └── RouteProtegee.jsx
+│   │   │
+│   │   ├── stores/
+│   │   │   ├── auth.store.js
+│   │   │   └── posts.store.js
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   │
+│   └── package.json
+│
+├── serveur/
+│   ├── src/
+│   │   ├── configuration/
+│   │   │   ├── baseDeDonnees.js
+│   │   │   └── cloudinary.js
+│   │   │
+│   │   ├── controleurs/
+│   │   │   ├── auth.controleur.js
+│   │   │   ├── posts.controleur.js
+│   │   │   ├── commentaires.controleur.js
+│   │   │   └── utilisateurs.controleur.js
+│   │   │
+│   │   ├── middlewares/
+│   │   │   ├── authentification.middleware.js
+│   │   │   ├── validation.middleware.js
+│   │   │   ├── gestionErreurs.middleware.js
+│   │   │   └── televersement.middleware.js
+│   │   │
+│   │   ├── modeles/
+│   │   │   ├── utilisateur.modele.js
+│   │   │   ├── post.modele.js
+│   │   │   └── commentaire.modele.js
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── routesAuth.js
+│   │   │   ├── routesPosts.js
+│   │   │   ├── routesCommentaires.js
+│   │   │   ├── routesUtilisateurs.js
+│   │   │   └── routesSante.js
+│   │   │
+│   │   ├── services/
+│   │   │   └── cloudinary.service.js
+│   │   │
+│   │   ├── utilitaires/
+│   │   │   └── reponse.js
+│   │   │
+│   │   └── validations/
+│   │       ├── auth.validation.js
+│   │       ├── post.validation.js
+│   │       └── commentaire.validation.js
+│   │
+│   ├── app.js
+│   ├── serveur.js
+│   └── package.json
+│
+└── README.md
+```
 ---
 
 # 🔐 Fonctionnalités Implémentées (V1)
