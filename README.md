@@ -122,3 +122,24 @@ Upload d’images (Cloudinary ou S3)
 Optimisation UX
 Tests unitaires
 Déploiement production
+
+---
+
+# 🤖 Utilisation de l’IA dans le projet
+
+L’intelligence artificielle a été utilisée comme **outil d’assistance technique**, notamment pour :
+
+- Clarification de concepts React et gestion d’état (Zustand)
+- Debug Problème de la logique Like / Unlike (update UI dynamique)
+- Debug des problèmes liés au JWT et à l’interceptor Axios
+- Amélioration de l’architecture frontend (séparation API / Store / UI)
+- Aide à la structuration du README
+
+L’IA a été utilisée comme :
+- Assistant de réflexion
+- Outil de debugging
+- Support pédagogique
+
+Toute la logique métier, la compréhension des flux et l’intégration complète ont été réalisées et adaptées manuellement.
+
+---
