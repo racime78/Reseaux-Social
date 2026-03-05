@@ -9,12 +9,16 @@ export async function creerPost(req, res, next) {
     const post = await Post.create({
       author: req.utilisateur.id,
       content,
-      image: "", // on garde le champ mais on ne l'utilise pas en V1
+      image: "",
       likes: [],
       comments: []
     });
 
-    return res.status(201).json({ succes: true, post });
+    const postPopule = await Post.findById(post._id)
+      .populate("author", "username avatar");
+
+    return res.status(201).json({ succes: true, post: postPopule });
+
   } catch (e) {
     next(e);
   }
@@ -52,19 +56,22 @@ export async function listerPosts(req, res, next) {
       totalPages,
       posts
     });
+
   } catch (e) {
     next(e);
   }
 }
 
-
-
 export async function detailPost(req, res, next) {
   try {
-    const post = await Post.findById(req.params.id).populate("author", "username avatar");
-    if (!post) return res.status(404).json({ succes: false, message: "Post introuvable" });
+    const post = await Post.findById(req.params.id)
+      .populate("author", "username avatar");
+
+    if (!post)
+      return res.status(404).json({ succes: false, message: "Post introuvable" });
 
     return res.status(200).json({ succes: true, post });
+
   } catch (e) {
     next(e);
   }
@@ -75,7 +82,8 @@ export async function modifierPost(req, res, next) {
     const { content } = req.body;
 
     const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ succes: false, message: "Post introuvable" });
+    if (!post)
+      return res.status(404).json({ succes: false, message: "Post introuvable" });
 
     if (post.author.toString() !== req.utilisateur.id) {
       return res.status(403).json({ succes: false, message: "Action interdite" });
@@ -84,7 +92,11 @@ export async function modifierPost(req, res, next) {
     post.content = content;
     await post.save();
 
-    return res.status(200).json({ succes: true, post });
+    const postPopule = await Post.findById(post._id)
+      .populate("author", "username avatar");
+
+    return res.status(200).json({ succes: true, post: postPopule });
+
   } catch (e) {
     next(e);
   }
@@ -93,14 +105,21 @@ export async function modifierPost(req, res, next) {
 export async function supprimerPost(req, res, next) {
   try {
     const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ succes: false, message: "Post introuvable" });
+
+    if (!post)
+      return res.status(404).json({ succes: false, message: "Post introuvable" });
 
     if (post.author.toString() !== req.utilisateur.id) {
       return res.status(403).json({ succes: false, message: "Action interdite" });
     }
 
     await post.deleteOne();
-    return res.status(200).json({ succes: true, message: "Post supprimé" });
+
+    return res.status(200).json({
+      succes: true,
+      message: "Post supprimé"
+    });
+
   } catch (e) {
     next(e);
   }
@@ -116,17 +135,24 @@ export async function likerPost(req, res, next) {
     }
 
     const post = await Post.findById(postId);
-    if (!post) return res.status(404).json({ succes: false, message: "Post introuvable" });
+    if (!post)
+      return res.status(404).json({ succes: false, message: "Post introuvable" });
 
     const dejaLike = post.likes.some((id) => id.toString() === userId);
-    if (dejaLike) {
-      return res.status(200).json({ succes: true, message: "Déjà liké", likesCount: post.likes.length });
+
+    if (!dejaLike) {
+      post.likes.push(userId);
+      await post.save();
     }
 
-    post.likes.push(userId);
-    await post.save();
+    const postMisAJour = await Post.findById(postId)
+      .populate("author", "username avatar");
 
-    return res.status(200).json({ succes: true, message: "Post liké", likesCount: post.likes.length });
+    return res.status(200).json({
+      succes: true,
+      post: postMisAJour
+    });
+
   } catch (e) {
     next(e);
   }
@@ -142,14 +168,21 @@ export async function retirerLike(req, res, next) {
     }
 
     const post = await Post.findById(postId);
-    if (!post) return res.status(404).json({ succes: false, message: "Post introuvable" });
+    if (!post)
+      return res.status(404).json({ succes: false, message: "Post introuvable" });
 
     post.likes = post.likes.filter((id) => id.toString() !== userId);
     await post.save();
 
-    return res.status(200).json({ succes: true, message: "Like retiré", likesCount: post.likes.length });
+    const postMisAJour = await Post.findById(postId)
+      .populate("author", "username avatar");
+
+    return res.status(200).json({
+      succes: true,
+      post: postMisAJour
+    });
+
   } catch (e) {
     next(e);
   }
 }
-

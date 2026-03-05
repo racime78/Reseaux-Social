@@ -55,7 +55,8 @@ export const usePostsStore = create((set, get) => ({
 
       if (postCree && userOk) {
         const auteur = postCree.author;
-        const auteurADejaUsername = typeof auteur === "object" && !!auteur?.username;
+        const auteurADejaUsername =
+          typeof auteur === "object" && !!auteur?.username;
 
         if (!auteurADejaUsername) {
           postCree = {
@@ -88,98 +89,57 @@ export const usePostsStore = create((set, get) => ({
     }
   },
 
-  // ✅ LIKE (optimistic)
+  // 👍 LIKE
   likerPost: async (postId) => {
-  const auth = useAuthStore.getState().utilisateur;
-  const user = auth?.utilisateur || auth;
-  const userId = user?._id || user?.id;
+    try {
+      const res = await likerPostAPI(postId);
 
-  if (userId) {
-    set((state) => ({
-      posts: state.posts.map((p) => {
-        if (p._id !== postId) return p;
+      const postMisAJour =
+        res.data?.post || res.data?.data?.post || res.data;
 
-        const likes = p.likes || [];
-        const likesIds = likes
-          .map((l) => (typeof l === "string" ? l : l?._id || l?.id))
-          .filter(Boolean);
+      if (!postMisAJour) return false;
 
-        if (likesIds.includes(userId)) return p;
-
-        // On stocke en string (simple), PostCard sait gérer
-        return { ...p, likes: [...likesIds, userId] };
-      }),
-    }));
-  }
-
-  try {
-    await likerPostAPI(postId);
-    return true;
-  } catch (e) {
-    // rollback
-    if (userId) {
       set((state) => ({
-        posts: state.posts.map((p) => {
-          if (p._id !== postId) return p;
-
-          const likes = p.likes || [];
-          const likesIds = likes
-            .map((l) => (typeof l === "string" ? l : l?._id || l?.id))
-            .filter(Boolean);
-
-          return { ...p, likes: likesIds.filter((id) => id !== userId) };
-        }),
+        posts: state.posts.map((p) =>
+          p._id === postId ? postMisAJour : p
+        ),
       }));
+
+      return true;
+
+    } catch (e) {
+      set({
+        erreur: e?.response?.data?.message || "Erreur like",
+      });
+      return false;
     }
-    set({ erreur: e?.response?.data?.message || "Erreur like" });
-    return false;
-  }
-},
+  },
 
-unlikerPost: async (postId) => {
-  const auth = useAuthStore.getState().utilisateur;
-  const user = auth?.utilisateur || auth;
-  const userId = user?._id || user?.id;
+  // 👎 UNLIKE
+  unlikerPost: async (postId) => {
+    try {
+      const res = await unlikerPostAPI(postId);
 
-  if (userId) {
-    set((state) => ({
-      posts: state.posts.map((p) => {
-        if (p._id !== postId) return p;
+      const postMisAJour =
+        res.data?.post || res.data?.data?.post || res.data;
 
-        const likes = p.likes || [];
-        const likesIds = likes
-          .map((l) => (typeof l === "string" ? l : l?._id || l?.id))
-          .filter(Boolean);
+      if (!postMisAJour) return false;
 
-        return { ...p, likes: likesIds.filter((id) => id !== userId) };
-      }),
-    }));
-  }
-
-  try {
-    await unlikerPostAPI(postId);
-    return true;
-  } catch (e) {
-    // rollback
-    if (userId) {
       set((state) => ({
-        posts: state.posts.map((p) => {
-          if (p._id !== postId) return p;
-
-          const likes = p.likes || [];
-          const likesIds = likes
-            .map((l) => (typeof l === "string" ? l : l?._id || l?.id))
-            .filter(Boolean);
-
-          if (likesIds.includes(userId)) return p;
-          return { ...p, likes: [...likesIds, userId] };
-        }),
+        posts: state.posts.map((p) =>
+          p._id === postId ? postMisAJour : p
+        ),
       }));
+
+      return true;
+
+    } catch (e) {
+      set({
+        erreur: e?.response?.data?.message || "Erreur unlike",
+      });
+      return false;
     }
-    set({ erreur: e?.response?.data?.message || "Erreur unlike" });
-    return false;
-  }
-},
+  },
 
   resetFeed: () => set({ posts: [], page: 1, totalPages: 1 }),
 }));

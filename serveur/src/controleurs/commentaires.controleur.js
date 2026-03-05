@@ -6,15 +6,31 @@ export async function listerCommentaires(req, res, next) {
   try {
     const postId = req.params.postId;
 
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
     if (!mongoose.Types.ObjectId.isValid(postId)) {
       return res.status(400).json({ succes: false, message: "ID post invalide" });
     }
 
+    const total = await Commentaire.countDocuments({ post: postId });
+
     const commentaires = await Commentaire.find({ post: postId })
       .populate("author", "username avatar")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    return res.status(200).json({ succes: true, commentaires });
+    return res.status(200).json({
+      succes: true,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+      commentaires
+    });
+
   } catch (e) {
     next(e);
   }
@@ -30,7 +46,9 @@ export async function creerCommentaire(req, res, next) {
     }
 
     const post = await Post.findById(postId);
-    if (!post) return res.status(404).json({ succes: false, message: "Post introuvable" });
+    if (!post) {
+      return res.status(404).json({ succes: false, message: "Post introuvable" });
+    }
 
     const commentaire = await Commentaire.create({
       post: postId,
@@ -38,11 +56,20 @@ export async function creerCommentaire(req, res, next) {
       content
     });
 
-    // cohérence : on push l'id du commentaire dans le post
+    // cohérence : push dans le post
     post.comments.push(commentaire._id);
     await post.save();
 
-    return res.status(201).json({ succes: true, commentaire });
+    // ✅ populate
+    const commentairePopule = await Commentaire
+      .findById(commentaire._id)
+      .populate("author", "username avatar");
+
+    return res.status(201).json({
+      succes: true,
+      commentaire: commentairePopule
+    });
+
   } catch (e) {
     next(e);
   }
