@@ -7,20 +7,23 @@ export const useAuthStore = create((set, get) => ({
   chargement: false,
   erreur: null,
 
-  // --- utils ---
   setToken: (token) => {
     if (token) localStorage.setItem("token", token);
     else localStorage.removeItem("token");
     set({ token });
   },
 
-  // --- récupérer l'utilisateur connecté ---
   me: async () => {
     try {
       set({ chargement: true, erreur: null });
       const res = await moiAPI();
-      set({ utilisateur: res.data, chargement: false });
-      return res.data;
+
+      set({
+        utilisateur: res.data?.utilisateur || res.data,
+        chargement: false,
+      });
+
+      return res.data?.utilisateur || res.data;
     } catch (e) {
       get().deconnexion();
       set({ chargement: false, erreur: "Token invalide" });
@@ -28,16 +31,13 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // --- connexion ---
   connexion: async ({ identifiant, password }) => {
     try {
       set({ chargement: true, erreur: null });
 
       const res = await connexionAPI({ identifiant, password });
 
-      // 🔑 TON BACKEND RENVOIE tokenAcces
-      const token =
-        res.data?.tokenAcces;
+      const token = res.data?.tokenAcces;
 
       if (!token) {
         throw new Error("Token introuvable dans la réponse");
@@ -57,14 +57,12 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // --- inscription (PAS de token renvoyé) ---
   inscription: async (payload) => {
     try {
       set({ chargement: true, erreur: null });
 
       await inscriptionAPI(payload);
 
-      // pas de token ici → redirection vers /connexion
       set({ chargement: false });
       return true;
     } catch (e) {
@@ -76,7 +74,6 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // --- logout ---
   deconnexion: () => {
     localStorage.removeItem("token");
     set({ token: null, utilisateur: null, erreur: null });

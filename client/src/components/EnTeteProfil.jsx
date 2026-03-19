@@ -42,27 +42,26 @@ export default function EnTeteProfil({
           </div>
         </div>
 
-        <div>
-          {estMonProfil ? (
-            <button className="px-4 py-2 rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition">
-              Modifier le profil
-            </button>
-          ) : estSuiviParMoi ? (
-            <button
-              onClick={auClicNePlusSuivre}
-              className="px-4 py-2 rounded-xl border border-gray-300 text-gray-800 hover:bg-gray-100 transition"
-            >
-              Ne plus suivre
-            </button>
-          ) : (
-            <button
-              onClick={auClicSuivre}
-              className="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
-            >
-              Suivre
-            </button>
-          )}
-        </div>
+        {/* 🔥 Bouton UNIQUEMENT si ce n'est PAS mon profil */}
+        {!estMonProfil && (
+          <div>
+            {estSuiviParMoi ? (
+              <button
+                onClick={auClicNePlusSuivre}
+                className="px-4 py-2 rounded-xl border border-gray-300 text-gray-800 hover:bg-gray-100 transition"
+              >
+                Ne plus suivre
+              </button>
+            ) : (
+              <button
+                onClick={auClicSuivre}
+                className="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
+              >
+                Suivre
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

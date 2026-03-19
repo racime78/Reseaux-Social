@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { usePostsStore } from "../stores/posts.store";
 import { useAuthStore } from "../stores/auth.store";
@@ -11,9 +12,6 @@ export default function Feed() {
 
   const { posts, chargerPosts, page, totalPages, chargement } = usePostsStore();
 
-  console.log(utilisateur);
-
-  // évite le double appel en dev (React.StrictMode)
   const aDejaCharge = useRef(false);
 
   useEffect(() => {
@@ -22,17 +20,31 @@ export default function Feed() {
     chargerPosts();
   }, [chargerPosts]);
 
+  const idUtilisateurConnecte = utilisateur?._id || utilisateur?.id;
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-2xl mx-auto p-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold">Feed</h1>
-          <button
-            onClick={deconnexion}
-            className="border rounded-lg px-3 py-2 bg-white"
-          >
-            Déconnexion
-          </button>
+
+          <div className="flex items-center gap-3">
+            {idUtilisateurConnecte && (
+              <Link
+                to={`/profil/${idUtilisateurConnecte}`}
+                className="border rounded-lg px-3 py-2 bg-white"
+              >
+                Mon profil
+              </Link>
+            )}
+
+            <button
+              onClick={deconnexion}
+              className="border rounded-lg px-3 py-2 bg-white"
+            >
+              Déconnexion
+            </button>
+          </div>
         </div>
 
         <FormulairePost />

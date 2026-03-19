@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { User } from "../modeles/utilisateur.modele.js";
+import { Post } from "../modeles/post.modele.js";
+
 
 export async function suivreUtilisateur(req, res, next) {
   try {
@@ -15,9 +17,10 @@ export async function suivreUtilisateur(req, res, next) {
     }
 
     const cible = await User.findById(cibleId);
-    if (!cible) return res.status(404).json({ succes: false, message: "Utilisateur introuvable" });
+    if (!cible) {
+      return res.status(404).json({ succes: false, message: "Utilisateur introuvable" });
+    }
 
-    // ✅ ajoute sans doublon
     await User.updateOne({ _id: moiId }, { $addToSet: { following: cibleId } });
     await User.updateOne({ _id: cibleId }, { $addToSet: { followers: moiId } });
 
@@ -41,7 +44,9 @@ export async function nePlusSuivreUtilisateur(req, res, next) {
     }
 
     const cible = await User.findById(cibleId);
-    if (!cible) return res.status(404).json({ succes: false, message: "Utilisateur introuvable" });
+    if (!cible) {
+      return res.status(404).json({ succes: false, message: "Utilisateur introuvable" });
+    }
 
     await User.updateOne({ _id: moiId }, { $pull: { following: cibleId } });
     await User.updateOne({ _id: cibleId }, { $pull: { followers: moiId } });
@@ -57,7 +62,9 @@ export async function listerFollowers(req, res, next) {
     const userId = req.params.id;
 
     const user = await User.findById(userId).populate("followers", "username avatar bio");
-    if (!user) return res.status(404).json({ succes: false, message: "Utilisateur introuvable" });
+    if (!user) {
+      return res.status(404).json({ succes: false, message: "Utilisateur introuvable" });
+    }
 
     return res.status(200).json({ succes: true, followers: user.followers });
   } catch (e) {
@@ -70,7 +77,9 @@ export async function listerFollowing(req, res, next) {
     const userId = req.params.id;
 
     const user = await User.findById(userId).populate("following", "username avatar bio");
-    if (!user) return res.status(404).json({ succes: false, message: "Utilisateur introuvable" });
+    if (!user) {
+      return res.status(404).json({ succes: false, message: "Utilisateur introuvable" });
+    }
 
     return res.status(200).json({ succes: true, following: user.following });
   } catch (e) {
@@ -81,6 +90,7 @@ export async function listerFollowing(req, res, next) {
 export async function rechercherUtilisateurs(req, res, next) {
   try {
     const search = (req.query.search || "").trim();
+
     if (!search) {
       return res.status(200).json({ succes: true, utilisateurs: [] });
     }
@@ -89,7 +99,7 @@ export async function rechercherUtilisateurs(req, res, next) {
 
     const utilisateurs = await User.find({
       _id: { $ne: req.utilisateur.id },
-      $or: [{ username: regex }, { email: regex }]
+      $or: [{ username: regex }, { email: regex }],
     })
       .select("username avatar bio location website followers following createdAt")
       .limit(20);
@@ -103,16 +113,53 @@ export async function rechercherUtilisateurs(req, res, next) {
 export async function profilPublic(req, res, next) {
   try {
     const userId = req.params.id;
+    const moiId = req.utilisateur._id || req.utilisateur.id;
 
-    const user = await User.findById(userId)
-      .select("username avatar coverPhoto bio location website followers following createdAt")
-      .populate("followers", "username avatar")
-      .populate("following", "username avatar");
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        succes: false,
+        message: "ID utilisateur invalide",
+      });
+    }
 
-    if (!user) return res.status(404).json({ succes: false, message: "Utilisateur introuvable" });
+    const user = await User.findById(userId).select(
+      "username avatar coverPhoto bio location website followers following createdAt"
+    );
 
-    return res.status(200).json({ succes: true, utilisateur: user });
+    if (!user) {
+      return res.status(404).json({
+        succes: false,
+        message: "Utilisateur introuvable",
+      });
+    }
+
+    const posts = await Post.find({ author: userId })
+      .sort({ createdAt: -1 })
+      .populate("author", "username avatar");
+
+    const estSuiviParMoi = user.followers.some(
+      (followerId) => followerId.toString() === String(moiId)
+    );
+
+    return res.status(200).json({
+      succes: true,
+      utilisateur: {
+        _id: user._id,
+        username: user.username,
+        avatar: user.avatar,
+        coverPhoto: user.coverPhoto,
+        bio: user.bio,
+        location: user.location,
+        website: user.website,
+        followersCount: user.followers.length,
+        followingCount: user.following.length,
+        estSuiviParMoi,
+        createdAt: user.createdAt,
+      },
+      posts,
+    });
   } catch (e) {
+    console.error("ERREUR profilPublic :", e);
     next(e);
   }
 }

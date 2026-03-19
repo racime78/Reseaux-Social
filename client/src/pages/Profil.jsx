@@ -31,7 +31,8 @@ export default function Profil() {
     };
   }, [id, chargerProfil, viderProfil]);
 
-  const estMonProfil = utilisateur?._id === id;
+  const idUtilisateurConnecte = utilisateur?._id || utilisateur?.id;
+  const estMonProfil = String(idUtilisateurConnecte) === String(id);
 
   if (chargement) {
     return (

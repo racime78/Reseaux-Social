@@ -1,20 +1,11 @@
+import { Link } from "react-router-dom";
 import { useAuthStore } from "../stores/auth.store";
 import { usePostsStore } from "../stores/posts.store";
 import Commentaires from "./Commentaires";
 
 function extraireUserDepuisAuthState(authState) {
-  // Gère plusieurs structures possibles sans casser ton existant
-  // cas 1: authState.utilisateur = { _id, username, ... }
-  // cas 2: authState.utilisateur = { utilisateur: { _id, username, ... }, tokenAcces... }
-  // cas 3: authState = { utilisateur: ... } ou { user: ... } etc.
   const u = authState?.utilisateur;
-  return (
-    u?.utilisateur || // wrap { utilisateur: {...} }
-    u ||              // direct user
-    authState?.user ||
-    authState?.moi ||
-    null
-  );
+  return u?.utilisateur || u || authState?.user || authState?.moi || null;
 }
 
 function extraireUserIdDepuisJWT() {
@@ -28,14 +19,7 @@ function extraireUserIdDepuisJWT() {
     const payloadJson = atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"));
     const payload = JSON.parse(payloadJson);
 
-    // selon comment tu signes ton JWT
-    return (
-      payload.id ||
-      payload._id ||
-      payload.userId ||
-      payload.sub ||
-      null
-    );
+    return payload.id || payload._id || payload.userId || payload.sub || null;
   } catch {
     return null;
   }
@@ -44,18 +28,16 @@ function extraireUserIdDepuisJWT() {
 export default function PostCard({ post }) {
   const { likerPost, unlikerPost } = usePostsStore();
 
-  // ✅ on récupère tout l'état auth pour être robuste
   const authState = useAuthStore((s) => s);
   const user = extraireUserDepuisAuthState(authState);
 
-  // ✅ userId fiable (store -> sinon token)
-  const userId = (user?._id || user?.id || extraireUserIdDepuisJWT())?.toString?.() || null;
+  const userId =
+    (user?._id || user?.id || extraireUserIdDepuisJWT())?.toString?.() || null;
 
   if (!post) return null;
 
   const likes = post.likes || [];
 
-  // ✅ détection ultra robuste du like
   const aLike =
     !!userId &&
     likes.some((l) => {
@@ -77,7 +59,8 @@ export default function PostCard({ post }) {
   };
 
   const auteur = post.author;
-  const auteurId = typeof auteur === "object" ? auteur?._id || auteur?.id : auteur;
+  const auteurId =
+    typeof auteur === "object" ? auteur?._id || auteur?.id : auteur;
 
   let nomAuteur = "Utilisateur";
   if (typeof auteur === "object" && auteur?.username) {
@@ -89,7 +72,16 @@ export default function PostCard({ post }) {
   return (
     <div className="bg-white rounded-xl shadow p-4 mb-4">
       <div className="flex items-center justify-between">
-        <p className="font-semibold">{nomAuteur}</p>
+        {auteurId ? (
+          <Link
+            to={`/profil/${auteurId}`}
+            className="font-semibold hover:underline"
+          >
+            {nomAuteur}
+          </Link>
+        ) : (
+          <p className="font-semibold">{nomAuteur}</p>
+        )}
 
         <p className="text-sm text-gray-500">
           {post.createdAt ? new Date(post.createdAt).toLocaleString() : ""}
@@ -102,7 +94,6 @@ export default function PostCard({ post }) {
         <img src={post.image} alt="post" className="mt-3 rounded-lg w-full" />
       )}
 
-      {/* LIKE */}
       <div className="flex items-center gap-3 mt-3">
         <button
           onClick={toggleLike}
@@ -121,7 +112,6 @@ export default function PostCard({ post }) {
         </span>
       </div>
 
-      {/* COMMENTAIRES */}
       {post._id && (
         <div className="mt-4">
           <Commentaires postId={post._id} />
