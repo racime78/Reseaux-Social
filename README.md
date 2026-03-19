@@ -52,23 +52,29 @@ reseau-social-v1/
 │   │   ├── api/
 │   │   │   ├── axios.js
 │   │   │   ├── auth.api.js
-│   │   │   └── posts.api.js
+│   │   │   ├── posts.api.js
+│   │   │   └── utilisateurs.api.js
 │   │   │
 │   │   ├── components/
 │   │   │   ├── FormulairePost.jsx
-│   │   │   └── PostCard.jsx
+│   │   │   ├── PostCard.jsx
+│   │   │   ├── Commentaires.jsx
+│   │   │   ├── EnTeteProfil.jsx
+│   │   │   └── ListePostsProfil.jsx
 │   │   │
 │   │   ├── pages/
 │   │   │   ├── Connexion.jsx
 │   │   │   ├── Inscription.jsx
-│   │   │   └── Feed.jsx
+│   │   │   ├── Feed.jsx
+│   │   │   └── Profil.jsx
 │   │   │
 │   │   ├── routes/
 │   │   │   └── RouteProtegee.jsx
 │   │   │
 │   │   ├── stores/
 │   │   │   ├── auth.store.js
-│   │   │   └── posts.store.js
+│   │   │   ├── posts.store.js
+│   │   │   └── profil.store.js
 │   │   │
 │   │   ├── App.jsx
 │   │   ├── main.jsx
