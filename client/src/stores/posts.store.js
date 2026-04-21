@@ -4,6 +4,7 @@ import {
   creerPostAPI,
   likerPostAPI,
   unlikerPostAPI,
+  modifierPostAPI,
 } from "../api/posts.api";
 import { useAuthStore } from "./auth.store";
 
@@ -88,6 +89,23 @@ export const usePostsStore = create((set, get) => ({
       return false;
     }
   },
+
+  modifierPost: async (postId, content) => {
+  try {
+    const res = await modifierPostAPI(postId, { content });
+    const postMaj = res.data.post;
+
+    set((state) => ({
+      posts: state.posts.map((p) =>
+        p._id === postId ? postMaj : p
+      ),
+    }));
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+},
 
   // 👍 LIKE
   likerPost: async (postId) => {

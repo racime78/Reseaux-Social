@@ -104,3 +104,38 @@ export async function supprimerCommentaire(req, res, next) {
     next(e);
   }
 }
+
+export async function modifierCommentaire(req, res, next) {
+  try {
+    const commentaireId = req.params.id;
+    const { content } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(commentaireId)) {
+      return res.status(400).json({ succes: false, message: "ID commentaire invalide" });
+    }
+
+    const commentaire = await Commentaire.findById(commentaireId);
+
+    if (!commentaire)
+      return res.status(404).json({ succes: false, message: "Commentaire introuvable" });
+
+    if (commentaire.author.toString() !== req.utilisateur.id) {
+      return res.status(403).json({ succes: false, message: "Action interdite" });
+    }
+
+    commentaire.content = content;
+    await commentaire.save();
+
+    const commentairePopule = await Commentaire
+      .findById(commentaire._id)
+      .populate("author", "username avatar");
+
+    return res.status(200).json({
+      succes: true,
+      commentaire: commentairePopule
+    });
+
+  } catch (e) {
+    next(e);
+  }
+}

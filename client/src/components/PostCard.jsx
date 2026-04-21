@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { useAuthStore } from "../stores/auth.store";
 import { usePostsStore } from "../stores/posts.store";
 import Commentaires from "./Commentaires";
@@ -26,7 +27,7 @@ function extraireUserIdDepuisJWT() {
 }
 
 export default function PostCard({ post }) {
-  const { likerPost, unlikerPost } = usePostsStore();
+  const { likerPost, unlikerPost, modifierPost } = usePostsStore();
 
   const authState = useAuthStore((s) => s);
   const user = extraireUserDepuisAuthState(authState);
@@ -69,8 +70,26 @@ export default function PostCard({ post }) {
     nomAuteur = user?.username || "Moi";
   }
 
+  // ------------------------
+  // 🔥 MODE ÉDITION
+  // ------------------------
+
+  const [modeEdition, setModeEdition] = useState(false);
+  const [nouveauContenu, setNouveauContenu] = useState(post.content || "");
+
+  const sauvegarder = async () => {
+    if (!post._id || !nouveauContenu.trim()) return;
+
+    const ok = await modifierPost(post._id, nouveauContenu.trim());
+    if (ok) setModeEdition(false);
+  };
+
+  const estAuteur =
+    userId && auteurId && auteurId.toString?.() === userId;
+
   return (
     <div className="bg-white rounded-xl shadow p-4 mb-4">
+      {/* Header */}
       <div className="flex items-center justify-between">
         {auteurId ? (
           <Link
@@ -88,13 +107,59 @@ export default function PostCard({ post }) {
         </p>
       </div>
 
-      {post.content && <p className="mt-2 whitespace-pre-wrap">{post.content}</p>}
+      {/* 🔥 Bouton Modifier */}
+      {estAuteur && !modeEdition && (
+        <div className="mt-1">
+          <button
+            onClick={() => setModeEdition(true)}
+            className="text-sm text-blue-500 hover:underline"
+          >
+            Modifier
+          </button>
+        </div>
+      )}
 
+      {/* 🔥 Contenu / Edition */}
+      {modeEdition ? (
+        <div className="mt-3">
+          <textarea
+            className="w-full border rounded p-2"
+            value={nouveauContenu}
+            onChange={(e) => setNouveauContenu(e.target.value)}
+          />
+
+          <div className="flex gap-2 mt-2">
+            <button
+              onClick={sauvegarder}
+              className="bg-black text-white px-3 py-1 rounded"
+            >
+              Enregistrer
+            </button>
+
+            <button
+              onClick={() => {
+                setModeEdition(false);
+                setNouveauContenu(post.content || "");
+              }}
+              className="border px-3 py-1 rounded"
+            >
+              Annuler
+            </button>
+          </div>
+        </div>
+      ) : (
+        post.content && (
+          <p className="mt-3 whitespace-pre-wrap">{post.content}</p>
+        )
+      )}
+
+      {/* Image */}
       {post.image && (
         <img src={post.image} alt="post" className="mt-3 rounded-lg w-full" />
       )}
 
-      <div className="flex items-center gap-3 mt-3">
+      {/* Like Section */}
+      <div className="flex items-center gap-3 mt-4">
         <button
           onClick={toggleLike}
           type="button"
@@ -112,6 +177,7 @@ export default function PostCard({ post }) {
         </span>
       </div>
 
+      {/* Commentaires */}
       {post._id && (
         <div className="mt-4">
           <Commentaires postId={post._id} />

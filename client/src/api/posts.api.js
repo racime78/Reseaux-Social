@@ -10,3 +10,6 @@ export const likerPostAPI = (postId) => api.post(`/posts/${postId}/like`);
 
 export const unlikerPostAPI = (postId) => api.delete(`/posts/${postId}/unlike`);
 
+export const modifierPostAPI = (postId, data) =>
+  api.put(`/posts/${postId}`, data);
+
