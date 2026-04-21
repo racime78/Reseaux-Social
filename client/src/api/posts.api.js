@@ -13,3 +13,5 @@ export const unlikerPostAPI = (postId) => api.delete(`/posts/${postId}/unlike`);
 export const modifierPostAPI = (postId, data) =>
   api.put(`/posts/${postId}`, data);
 
+export const supprimerPostAPI = (postId) =>
+  api.delete(`/posts/${postId}`);

@@ -27,7 +27,12 @@ function extraireUserIdDepuisJWT() {
 }
 
 export default function PostCard({ post }) {
-  const { likerPost, unlikerPost, modifierPost } = usePostsStore();
+  const {
+    likerPost,
+    unlikerPost,
+    modifierPost,
+    supprimerPost
+  } = usePostsStore();
 
   const authState = useAuthStore((s) => s);
   const user = extraireUserDepuisAuthState(authState);
@@ -51,12 +56,8 @@ export default function PostCard({ post }) {
 
   const toggleLike = async () => {
     if (!post?._id) return;
-
-    if (aLike) {
-      await unlikerPost(post._id);
-    } else {
-      await likerPost(post._id);
-    }
+    if (aLike) await unlikerPost(post._id);
+    else await likerPost(post._id);
   };
 
   const auteur = post.author;
@@ -70,25 +71,41 @@ export default function PostCard({ post }) {
     nomAuteur = user?.username || "Moi";
   }
 
-  // ------------------------
-  // 🔥 MODE ÉDITION
-  // ------------------------
+  const estAuteur =
+    userId && auteurId && auteurId.toString?.() === userId;
+
+  // ---------------------
+  // 🔥 EDITION
+  // ---------------------
 
   const [modeEdition, setModeEdition] = useState(false);
   const [nouveauContenu, setNouveauContenu] = useState(post.content || "");
 
   const sauvegarder = async () => {
-    if (!post._id || !nouveauContenu.trim()) return;
+    const texte = nouveauContenu.trim();
+    if (!texte) return;
 
-    const ok = await modifierPost(post._id, nouveauContenu.trim());
+    const ok = await modifierPost(post._id, texte);
     if (ok) setModeEdition(false);
   };
 
-  const estAuteur =
-    userId && auteurId && auteurId.toString?.() === userId;
+  // ---------------------
+  // 🔥 SUPPRESSION (PRO)
+  // ---------------------
+
+  const handleSuppression = async () => {
+    const confirmation = window.confirm(
+      "Es-tu sûr de vouloir supprimer ce post ? Cette action est irréversible."
+    );
+
+    if (!confirmation) return;
+
+    await supprimerPost(post._id);
+  };
 
   return (
     <div className="bg-white rounded-xl shadow p-4 mb-4">
+
       {/* Header */}
       <div className="flex items-center justify-between">
         {auteurId ? (
@@ -103,23 +120,32 @@ export default function PostCard({ post }) {
         )}
 
         <p className="text-sm text-gray-500">
-          {post.createdAt ? new Date(post.createdAt).toLocaleString() : ""}
+          {post.createdAt
+            ? new Date(post.createdAt).toLocaleString()
+            : ""}
         </p>
       </div>
 
-      {/* 🔥 Bouton Modifier */}
+      {/* Actions auteur */}
       {estAuteur && !modeEdition && (
-        <div className="mt-1">
+        <div className="mt-1 flex gap-4">
           <button
             onClick={() => setModeEdition(true)}
             className="text-sm text-blue-500 hover:underline"
           >
             Modifier
           </button>
+
+          <button
+            onClick={handleSuppression}
+            className="text-sm text-red-500 hover:underline"
+          >
+            Supprimer
+          </button>
         </div>
       )}
 
-      {/* 🔥 Contenu / Edition */}
+      {/* Contenu */}
       {modeEdition ? (
         <div className="mt-3">
           <textarea
@@ -155,7 +181,11 @@ export default function PostCard({ post }) {
 
       {/* Image */}
       {post.image && (
-        <img src={post.image} alt="post" className="mt-3 rounded-lg w-full" />
+        <img
+          src={post.image}
+          alt="post"
+          className="mt-3 rounded-lg w-full"
+        />
       )}
 
       {/* Like Section */}

@@ -5,6 +5,7 @@ import {
   likerPostAPI,
   unlikerPostAPI,
   modifierPostAPI,
+  supprimerPostAPI,
 } from "../api/posts.api";
 import { useAuthStore } from "./auth.store";
 
@@ -107,6 +108,20 @@ export const usePostsStore = create((set, get) => ({
   }
 },
 
+supprimerPost: async (postId) => {
+  try {
+    await supprimerPostAPI(postId);
+
+    set((state) => ({
+      posts: state.posts.filter((p) => p._id !== postId),
+    }));
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+},
+
   // 👍 LIKE
   likerPost: async (postId) => {
     try {
@@ -132,6 +147,7 @@ export const usePostsStore = create((set, get) => ({
       return false;
     }
   },
+
 
   // 👎 UNLIKE
   unlikerPost: async (postId) => {
@@ -161,3 +177,4 @@ export const usePostsStore = create((set, get) => ({
 
   resetFeed: () => set({ posts: [], page: 1, totalPages: 1 }),
 }));
+
