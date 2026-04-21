@@ -54,6 +54,7 @@ export default function Inscription() {
           value={confirmationPassword}
           onChange={(e) => setConfirmationPassword(e.target.value)}
           type="password"
+            minLength={8}
           required
         />
 
