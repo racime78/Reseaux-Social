@@ -27,15 +27,30 @@ export async function creerPost(req, res, next) {
 export async function listerPosts(req, res, next) {
   try {
     const page = Math.max(parseInt(req.query.page || "1", 10), 1);
-    const limit = Math.min(Math.max(parseInt(req.query.limit || "20", 10), 1), 50);
+    const limit = Math.min(
+      Math.max(parseInt(req.query.limit || "20", 10), 1),
+      50
+    );
     const skip = (page - 1) * limit;
 
-    const moi = await User.findById(req.utilisateur.id).select("following");
-    if (!moi) return res.status(404).json({ succes: false, message: "Utilisateur introuvable" });
+    const mode = req.query.mode || "all";
 
-    const auteurs = [req.utilisateur.id, ...moi.following];
+    let filtre = {};
 
-    const filtre = { author: { $in: auteurs } };
+    if (mode === "following") {
+      const moi = await User.findById(req.utilisateur.id).select("following");
+
+      if (!moi) {
+        return res
+          .status(404)
+          .json({ succes: false, message: "Utilisateur introuvable" });
+      }
+
+      const auteurs = [req.utilisateur.id, ...moi.following];
+      filtre = { author: { $in: auteurs } };
+    }
+
+    // mode "all" → filtre vide → tous les posts
 
     const [posts, total] = await Promise.all([
       Post.find(filtre)
@@ -43,20 +58,21 @@ export async function listerPosts(req, res, next) {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
-      Post.countDocuments(filtre)
+
+      Post.countDocuments(filtre),
     ]);
 
     const totalPages = Math.ceil(total / limit);
 
     return res.status(200).json({
       succes: true,
+      mode,
       page,
       limit,
       total,
       totalPages,
-      posts
+      posts,
     });
-
   } catch (e) {
     next(e);
   }

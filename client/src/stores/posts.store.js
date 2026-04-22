@@ -17,26 +17,31 @@ export const usePostsStore = create((set, get) => ({
   erreur: null,
   creationEnCours: false,
 
-  chargerPosts: async () => {
-    try {
-      set({ chargement: true, erreur: null });
+  chargerPosts: async (mode = "all") => {
+  try {
+    set({ chargement: true, erreur: null });
 
-      const { page } = get();
-      const res = await recupererPostsAPI({ page, limit: 5 });
+    const { page } = get();
 
-      set((state) => ({
-        posts: [...state.posts, ...(res.data?.posts || [])],
-        page: state.page + 1,
-        totalPages: res.data?.totalPages || 1,
-        chargement: false,
-      }));
-    } catch (e) {
-      set({
-        chargement: false,
-        erreur: e?.response?.data?.message || "Erreur chargement feed",
-      });
-    }
-  },
+    const res = await recupererPostsAPI({
+      page,
+      limit: 5,
+      mode,
+    });
+
+    set((state) => ({
+      posts: [...state.posts, ...(res.data?.posts || [])],
+      page: state.page + 1,
+      totalPages: res.data?.totalPages || 1,
+      chargement: false,
+    }));
+  } catch (e) {
+    set({
+      chargement: false,
+      erreur: "Erreur chargement feed",
+    });
+  }
+},
 
   creerPost: async (content) => {
     try {

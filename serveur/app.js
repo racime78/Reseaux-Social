@@ -6,6 +6,7 @@ import { routesSante } from "./src/routes/routesSante.js";
 import { routesAuth } from "./src/routes/routesAuth.js";
 import { routesCommentaires } from "./src/routes/routesCommentaires.js";
 import { routesUtilisateurs } from "./src/routes/routesUtilisateurs.js";
+import { routesSearch } from "./src/routes/routesSearch.js";
 
 import { gestionErreurs } from "./src/middlewares/gestionErreurs.middleware.js";
 
@@ -19,5 +20,6 @@ app.use("/api", routesSante);
 app.use("/api", routesAuth);
 app.use("/api", routesCommentaires);
 app.use("/api", routesUtilisateurs);
+app.use("/api", routesSearch);
 
 app.use(gestionErreurs);
