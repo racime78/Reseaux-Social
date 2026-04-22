@@ -53,20 +53,24 @@ reseau-social-v1/
 │   │   │   ├── axios.js
 │   │   │   ├── auth.api.js
 │   │   │   ├── posts.api.js
-│   │   │   └── utilisateurs.api.js
+│   │   │   ├── utilisateurs.api.js
+│   │   │   └── search.api.js
 │   │   │
 │   │   ├── components/
 │   │   │   ├── FormulairePost.jsx
 │   │   │   ├── PostCard.jsx
 │   │   │   ├── Commentaires.jsx
+│   │   │   ├── CommentaireItem.jsx
 │   │   │   ├── EnTeteProfil.jsx
-│   │   │   └── ListePostsProfil.jsx
+│   │   │   ├── ListePostsProfil.jsx
+│   │   │   └── SearchBar.jsx
 │   │   │
 │   │   ├── pages/
 │   │   │   ├── Connexion.jsx
 │   │   │   ├── Inscription.jsx
 │   │   │   ├── Feed.jsx
-│   │   │   └── Profil.jsx
+│   │   │   ├── Profil.jsx
+│   │   │   └── DetailPost.jsx
 │   │   │
 │   │   ├── routes/
 │   │   │   └── RouteProtegee.jsx
@@ -74,7 +78,9 @@ reseau-social-v1/
 │   │   ├── stores/
 │   │   │   ├── auth.store.js
 │   │   │   ├── posts.store.js
-│   │   │   └── profil.store.js
+│   │   │   ├── commentaires.store.js
+│   │   │   ├── profil.store.js
+│   │   │   └── search.store.js
 │   │   │
 │   │   ├── App.jsx
 │   │   ├── main.jsx
@@ -92,7 +98,8 @@ reseau-social-v1/
 │   │   │   ├── auth.controleur.js
 │   │   │   ├── posts.controleur.js
 │   │   │   ├── commentaires.controleur.js
-│   │   │   └── utilisateurs.controleur.js
+│   │   │   ├── utilisateurs.controleur.js
+│   │   │   └── search.controleur.js
 │   │   │
 │   │   ├── middlewares/
 │   │   │   ├── authentification.middleware.js
@@ -110,6 +117,7 @@ reseau-social-v1/
 │   │   │   ├── routesPosts.js
 │   │   │   ├── routesCommentaires.js
 │   │   │   ├── routesUtilisateurs.js
+│   │   │   ├── routesSearch.js
 │   │   │   └── routesSante.js
 │   │   │
 │   │   ├── services/
@@ -133,24 +141,45 @@ reseau-social-v1/
 
 # 🔐 Fonctionnalités Implémentées (V1)
 
-## Authentification
-- Inscription
-- Connexion
-- Route protégée `/auth/moi`
-- Interceptor Axios pour JWT
-- Persistance token via localStorage
+# 🚀 Fonctionnalités utilisateur
 
-## Posts
-- Création de post
-- Feed personnalisé (posts perso + following)
-- Pagination backend
-- Infinite scroll frontend
-- Affichage auteur dynamique (populate/non populate)
+## 🔐 Authentification
+- Inscription avec validation des données
+- Connexion via email ou username
+- Gestion de session avec JWT
+- Déconnexion utilisateur
 
-## Likes
-- Like / Unlike
-- Prévention des doublons
-- Mise à jour dynamique UI
+## 👤 Profil
+- Consultation d’un profil utilisateur
+- Accès rapide à son propre profil
+
+## 📝 Posts
+- Gestion complète des posts (création, affichage, modification, suppression)
+- Feed dynamique :
+  - Tous les posts
+  - Posts des utilisateurs suivis
+- Infinite scroll (chargement progressif)
+- Page détail d’un post
+
+## 💬 Commentaires
+- Gestion complète des commentaires (ajout, affichage, modification, suppression)
+
+## ❤️ Likes
+- Like / Unlike des posts
+- Compteur de likes en temps réel
+
+## 🔎 Recherche
+- Barre de recherche dynamique
+- Recherche en temps réel (utilisateurs + posts)
+- Résultats limités (5 utilisateurs / 5 posts)
+- Navigation directe vers profils et posts
+
+## 🔁 Suivi (Follow)
+- Follow / Unfollow d’utilisateurs
+- Personnalisation du feed en fonction des utilisateurs suivis
+
+## 📊 Résumé
+Application de type réseau social permettant de publier du contenu, interagir (likes, commentaires), suivre d’autres utilisateurs et rechercher du contenu en temps réel.
 
 ---
 
