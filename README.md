@@ -1,6 +1,7 @@
 # 🧠 Réseau Social V1
 
-📅 Version actuelle : 03/03/2026  
+📅 Début du projet : 03/02/2026
+📅 Dernière mise à jours : 22/04/2026  
 🚀 Projet Fullstack – Node.js / Express / MongoDB / React (Vite)
 
 ---
@@ -223,21 +224,22 @@ Déploiement production
 
 ---
 
-# 🤖 Utilisation de l’IA dans le projet
+## 🤖 Utilisation de l’IA dans le projet
 
-L’intelligence artificielle a été utilisée comme **outil d’assistance technique**, notamment pour :
+L’intelligence artificielle a été utilisée comme **outil d’assistance technique** tout au long du développement, notamment pour :
 
-- Clarification de concepts React et gestion d’état (Zustand)
-- Debug Problème de la logique Like / Unlike (update UI dynamique)
-- Debug des problèmes liés au JWT et à l’interceptor Axios
-- Amélioration de l’architecture frontend (séparation API / Store / UI)
-- Aide à la structuration du README
+- Clarification de concepts (React, gestion d’état avec Zustand, architecture fullstack)
+- Aide au debugging (logique Like / Unlike, synchronisation UI, gestion du JWT)
+- Résolution de problèmes liés aux requêtes API et à l’interceptor Axios
+- Mise en place et amélioration de certaines fonctionnalités (feed dynamique, recherche globale, navigation)
+- Optimisation de l’architecture frontend (séparation API / Store / composants)
+- Aide à la structuration et à la rédaction du README
 
 L’IA a été utilisée comme :
 - Assistant de réflexion
 - Outil de debugging
 - Support pédagogique
 
-Toute la logique métier, la compréhension des flux et l’intégration complète ont été réalisées et adaptées manuellement.
+👉 L’ensemble de la logique métier, de l’architecture, des choix techniques et de l’intégration des fonctionnalités a été **compris, adapté et implémenté manuellement**.
 
 ---
