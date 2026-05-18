@@ -74,10 +74,6 @@ export default function PostCard({ post }) {
   const estAuteur =
     userId && auteurId && auteurId.toString?.() === userId;
 
-  // ---------------------
-  // 🔥 EDITION
-  // ---------------------
-
   const [modeEdition, setModeEdition] = useState(false);
   const [nouveauContenu, setNouveauContenu] = useState(post.content || "");
 
@@ -88,10 +84,6 @@ export default function PostCard({ post }) {
     const ok = await modifierPost(post._id, texte);
     if (ok) setModeEdition(false);
   };
-
-  // ---------------------
-  // 🔥 SUPPRESSION (PRO)
-  // ---------------------
 
   const handleSuppression = async () => {
     const confirmation = window.confirm(
@@ -104,115 +96,122 @@ export default function PostCard({ post }) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-4 mb-4">
-
-      {/* Header */}
-      <div className="flex items-center justify-between">
+  <div className="bg-white border border-blue-100 rounded-3xl shadow-sm p-5 transition hover:shadow-md">
+    
+    
+    <div className="flex items-start justify-between gap-4">
+      <div>
         {auteurId ? (
           <Link
             to={`/profil/${auteurId}`}
-            className="font-semibold hover:underline"
+            className="text-lg font-semibold text-blue-900 hover:text-blue-700 transition"
           >
             {nomAuteur}
           </Link>
         ) : (
-          <p className="font-semibold">{nomAuteur}</p>
+          <p className="text-lg font-semibold text-blue-900">
+            {nomAuteur}
+          </p>
         )}
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-slate-400 mt-1">
           {post.createdAt
             ? new Date(post.createdAt).toLocaleString()
             : ""}
         </p>
       </div>
+    </div>
 
-      {/* Actions auteur */}
-      {estAuteur && !modeEdition && (
-        <div className="mt-1 flex gap-4">
-          <button
-            onClick={() => setModeEdition(true)}
-            className="text-sm text-blue-500 hover:underline"
-          >
-            Modifier
-          </button>
-
-          <button
-            onClick={handleSuppression}
-            className="text-sm text-red-500 hover:underline"
-          >
-            Supprimer
-          </button>
-        </div>
-      )}
-
-      {/* Contenu */}
-      {modeEdition ? (
-        <div className="mt-3">
-          <textarea
-            className="w-full border rounded p-2"
-            value={nouveauContenu}
-            onChange={(e) => setNouveauContenu(e.target.value)}
-          />
-
-          <div className="flex gap-2 mt-2">
-            <button
-              onClick={sauvegarder}
-              className="bg-black text-white px-3 py-1 rounded"
-            >
-              Enregistrer
-            </button>
-
-            <button
-              onClick={() => {
-                setModeEdition(false);
-                setNouveauContenu(post.content || "");
-              }}
-              className="border px-3 py-1 rounded"
-            >
-              Annuler
-            </button>
-          </div>
-        </div>
-      ) : (
-        post.content && (
-          <p className="mt-3 whitespace-pre-wrap">{post.content}</p>
-        )
-      )}
-
-      {/* Image */}
-      {post.image && (
-        <img
-          src={post.image}
-          alt="post"
-          className="mt-3 rounded-lg w-full"
-        />
-      )}
-
-      {/* Like Section */}
-      <div className="flex items-center gap-3 mt-4">
+    
+    {estAuteur && !modeEdition && (
+      <div className="mt-3 flex gap-4">
         <button
-          onClick={toggleLike}
-          type="button"
-          className={`border rounded-lg px-3 py-1 transition cursor-pointer ${
-            aLike
-              ? "bg-black text-white hover:bg-white hover:text-black"
-              : "bg-white text-black hover:bg-black hover:text-white"
-          }`}
+          onClick={() => setModeEdition(true)}
+          className="text-sm font-medium text-blue-600 hover:text-blue-800 transition"
         >
-          {aLike ? "Unlike" : "Like"}
+          Modifier
         </button>
 
-        <span className="text-sm text-gray-600">
-          {likes.length} like{likes.length > 1 ? "s" : ""}
-        </span>
+        <button
+          onClick={handleSuppression}
+          className="text-sm font-medium text-red-500 hover:text-red-700 transition"
+        >
+          Supprimer
+        </button>
       </div>
+    )}
 
-      {/* Commentaires */}
-      {post._id && (
-        <div className="mt-4">
-          <Commentaires postId={post._id} />
+   
+    {modeEdition ? (
+      <div className="mt-4">
+        <textarea
+          className="w-full rounded-2xl border-2 border-blue-100 bg-blue-50 px-4 py-3 outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-200 transition resize-none"
+          value={nouveauContenu}
+          onChange={(e) => setNouveauContenu(e.target.value)}
+          rows={4}
+        />
+
+        <div className="flex gap-3 mt-3">
+          <button
+            onClick={sauvegarder}
+            className="bg-blue-700 text-white px-4 py-2 rounded-xl hover:bg-blue-800 transition shadow-sm"
+          >
+            Enregistrer
+          </button>
+
+          <button
+            onClick={() => {
+              setModeEdition(false);
+              setNouveauContenu(post.content || "");
+            }}
+            className="border border-blue-100 bg-white px-4 py-2 rounded-xl hover:bg-blue-50 transition"
+          >
+            Annuler
+          </button>
         </div>
-      )}
+      </div>
+    ) : (
+      post.content && (
+        <p className="mt-4 text-slate-700 whitespace-pre-wrap leading-relaxed">
+          {post.content}
+        </p>
+      )
+    )}
+
+    
+    {post.image && (
+      <img
+        src={post.image}
+        alt="post"
+        className="mt-4 rounded-2xl w-full border border-blue-100"
+      />
+    )}
+
+    
+    <div className="flex items-center gap-4 mt-5">
+      <button
+        onClick={toggleLike}
+        type="button"
+        className={`px-4 py-2 rounded-xl font-medium transition ${
+          aLike
+            ? "bg-blue-700 text-white hover:bg-blue-800"
+            : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+        }`}
+      >
+        {aLike ? "Unlike" : "Like"}
+      </button>
+
+      <span className="text-sm text-slate-500">
+        {likes.length} like{likes.length > 1 ? "s" : ""}
+      </span>
     </div>
-  );
+
+    
+    {post._id && (
+      <div className="mt-5">
+        <Commentaires postId={post._id} />
+      </div>
+    )}
+  </div>
+);
 }

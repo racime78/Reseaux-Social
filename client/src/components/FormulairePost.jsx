@@ -16,26 +16,31 @@ export default function FormulairePost() {
   };
 
   return (
-    <form onSubmit={soumettre} className="bg-white rounded-xl shadow p-4 mb-4">
-      <textarea
-        className="w-full border rounded-lg p-2 resize-none"
-        rows={3}
-        placeholder="Quoi de neuf ?"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
+  <form
+    onSubmit={soumettre}
+    className="bg-white border border-blue-100 rounded-3xl shadow-sm p-5 mb-5"
+  >
+    <textarea
+      className="w-full rounded-2xl border-2 border-blue-100 bg-blue-50 px-4 py-3 resize-none outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-200 transition"
+      rows={4}
+      placeholder="Quoi de neuf ?"
+      value={content}
+      onChange={(e) => setContent(e.target.value)}
+    />
 
-      {erreur && <p className="text-sm text-red-600 mt-2">{erreur}</p>}
+    {erreur && (
+      <p className="text-sm text-red-600 mt-3">{erreur}</p>
+    )}
 
-      <div className="flex justify-end mt-2">
-        <button
-          type="submit"
-          className="bg-black text-white rounded-lg px-4 py-2 disabled:opacity-50"
-          disabled={creationEnCours}
-        >
-          {creationEnCours ? "Publication..." : "Publier"}
-        </button>
-      </div>
-    </form>
-  );
+    <div className="flex justify-end mt-4">
+      <button
+        type="submit"
+        className="bg-blue-700 text-white rounded-xl px-5 py-2.5 font-medium hover:bg-blue-800 transition shadow-sm disabled:opacity-50"
+        disabled={creationEnCours}
+      >
+        {creationEnCours ? "Publication..." : "Publier"}
+      </button>
+    </div>
+  </form>
+);
 }

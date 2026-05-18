@@ -33,56 +33,66 @@ export default function Commentaires({ postId }) {
 
   const affiches = ouvert ? commentaires : commentaires.slice(0, 2);
 
-  return (
-    <div className="mt-4 border-t pt-3">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium">
-          Commentaires <span className="text-gray-500">({commentaires.length})</span>
-        </p>
+return (
+  <div className="mt-5 border-t border-blue-100 pt-4">
+    <div className="flex items-center justify-between">
+      <p className="text-sm font-semibold text-blue-900">
+        Commentaires{" "}
+        <span className="text-slate-400">
+          ({commentaires.length})
+        </span>
+      </p>
 
-        {commentaires.length > 2 && (
-          <button
-            type="button"
-            onClick={() => setOuvert((v) => !v)}
-            className="text-sm text-[#1c8755] hover:underline"
-          >
-            {ouvert ? "Réduire" : "Voir tout"}
-          </button>
-        )}
-      </div>
-
-      <form onSubmit={handleSubmit} className="flex gap-2 mt-3">
-        <input
-          type="text"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Ajouter un commentaire..."
-          className="border rounded-lg px-3 py-2 flex-1 text-sm outline-none focus:ring-2 focus:ring-[#1c8755]/30"
-          maxLength={280}
-        />
+      {commentaires.length > 2 && (
         <button
-          type="submit"
-          className="bg-[#1c8755] text-white px-4 py-2 rounded-lg text-sm hover:opacity-90"
+          type="button"
+          onClick={() => setOuvert((v) => !v)}
+          className="text-sm text-blue-600 hover:text-blue-800 transition"
         >
-          Envoyer
+          {ouvert ? "Réduire" : "Voir tout"}
         </button>
-      </form>
-
-      {chargement && <p className="text-sm mt-3">Chargement...</p>}
-
-      {!chargement && commentaires.length === 0 && (
-        <p className="text-sm text-gray-500 mt-3">Aucun commentaire</p>
       )}
-
-      <div className="mt-3 space-y-1">
-        {affiches.map((commentaire) => (
-          <CommentaireItem
-            key={commentaire._id}
-            postId={postId}
-            commentaire={commentaire}
-          />
-        ))}
-      </div>
     </div>
-  );
+
+    <form onSubmit={handleSubmit} className="flex gap-3 mt-4">
+      <input
+        type="text"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="Ajouter un commentaire..."
+        className="flex-1 rounded-xl border-2 border-blue-100 bg-blue-50 px-4 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-200 transition"
+        maxLength={280}
+      />
+
+      <button
+        type="submit"
+        className="bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-800 transition"
+      >
+        Envoyer
+      </button>
+    </form>
+
+    {chargement && (
+      <p className="text-sm mt-4 text-slate-500">
+        Chargement...
+      </p>
+    )}
+
+    {!chargement && commentaires.length === 0 && (
+      <p className="text-sm text-slate-400 mt-4">
+        Aucun commentaire
+      </p>
+    )}
+
+    <div className="mt-4 space-y-2">
+      {affiches.map((commentaire) => (
+        <CommentaireItem
+          key={commentaire._id}
+          postId={postId}
+          commentaire={commentaire}
+        />
+      ))}
+    </div>
+  </div>
+);
 }

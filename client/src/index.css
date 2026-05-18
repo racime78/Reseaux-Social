@@ -2,7 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
-  height: 100%;
-  margin: 0;
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply min-h-screen bg-white text-slate-900;
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at top left, #dbeafe 0%, transparent 25%),
+      radial-gradient(circle at bottom right, #bfdbfe 0%, transparent 25%),
+      #ffffff;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-blue-900 font-bold;
+  }
+
+  a {
+    @apply text-blue-600 transition;
+  }
+
+  a:hover {
+    @apply text-blue-800;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply w-full rounded-xl border-2 border-blue-100 bg-blue-50 px-4 py-3 outline-none transition;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply border-blue-400 bg-white ring-4 ring-blue-200;
+  }
+
+  button {
+    @apply transition;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-3xl border border-blue-100 bg-white shadow-lg;
+  }
+
+  .btn-primary {
+    @apply rounded-xl bg-blue-700 px-4 py-3 font-semibold text-white transition hover:bg-blue-800;
+  }
+
+  .btn-secondary {
+    @apply rounded-xl bg-blue-100 px-4 py-3 font-semibold text-blue-700 transition hover:bg-blue-200;
+  }
+
+  .page-container {
+    @apply min-h-screen p-4 md:p-8;
+  }
 }

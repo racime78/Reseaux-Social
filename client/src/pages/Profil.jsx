@@ -36,38 +36,46 @@ export default function Profil() {
 
   if (chargement) {
     return (
-      <div className="max-w-3xl mx-auto py-8 px-4">
-        <div className="text-center text-gray-600">Chargement du profil...</div>
+      <div className="max-w-3xl mx-auto py-10 px-4">
+        <div className="bg-white border border-blue-100 rounded-3xl p-8 text-center text-slate-500 shadow-sm">
+          Chargement du profil...
+        </div>
       </div>
     );
   }
 
   if (erreur) {
     return (
-      <div className="max-w-3xl mx-auto py-8 px-4">
-        <div className="bg-red-100 text-red-700 p-4 rounded-xl">{erreur}</div>
+      <div className="max-w-3xl mx-auto py-10 px-4">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-5 rounded-2xl">
+          {erreur}
+        </div>
       </div>
     );
   }
 
   if (!profil) {
     return (
-      <div className="max-w-3xl mx-auto py-8 px-4">
-        <div className="text-center text-gray-600">Profil introuvable.</div>
+      <div className="max-w-3xl mx-auto py-10 px-4">
+        <div className="bg-white border border-blue-100 rounded-3xl p-8 text-center text-slate-500 shadow-sm">
+          Profil introuvable.
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
-      <EnTeteProfil
-        profil={profil}
-        estMonProfil={estMonProfil}
-        auClicSuivre={() => suivre(id)}
-        auClicNePlusSuivre={() => nePlusSuivre(id)}
-      />
+    <div className="min-h-screen bg-white">
+      <div className="max-w-3xl mx-auto py-8 px-4 space-y-5">
+        <EnTeteProfil
+          profil={profil}
+          estMonProfil={estMonProfil}
+          auClicSuivre={() => suivre(id)}
+          auClicNePlusSuivre={() => nePlusSuivre(id)}
+        />
 
-      <ListePostsProfil posts={postsProfil} />
+        <ListePostsProfil posts={postsProfil} />
+      </div>
     </div>
   );
 }

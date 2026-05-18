@@ -44,45 +44,55 @@ export default function Feed() {
     utilisateur?._id || utilisateur?.id || null;
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="max-w-2xl mx-auto p-4">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-2xl mx-auto px-4 py-6">
         
         {/* HEADER */}
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold">Mon Réseaux Social</h1>
+        <div className="bg-white border border-blue-100 rounded-3xl shadow-sm p-5 mb-5">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-blue-900">
+                Mon Réseau Social
+              </h1>
 
-          <div className="flex items-center gap-3">
-            {idUtilisateurConnecte && (
-              <Link
-                to={`/profil/${idUtilisateurConnecte}`}
-                className="border rounded-lg px-3 py-2 bg-white hover:bg-black hover:text-white transition"
+              <p className="text-slate-500 mt-1">
+                Partagez vos idées avec votre communauté
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {idUtilisateurConnecte && (
+                <Link
+                  to={`/profil/${idUtilisateurConnecte}`}
+                  className="px-4 py-2 rounded-xl bg-blue-100 text-blue-700 font-medium hover:bg-blue-200 transition"
+                >
+                  Mon profil
+                </Link>
+              )}
+
+              <button
+                onClick={deconnexion}
+                className="px-4 py-2 rounded-xl bg-blue-700 text-white font-medium hover:bg-blue-800 transition shadow-md"
               >
-                Mon profil
-              </Link>
-            )}
-
-            <button
-              onClick={deconnexion}
-              className="border rounded-lg px-3 py-2 bg-white hover:bg-black hover:text-white transition"
-            >
-              Déconnexion
-            </button>
+                Déconnexion
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* 🔍 SEARCH BAR */}
-        <div className="mb-4">
+        {/* SEARCH */}
+        <div className="mb-5">
           <SearchBar />
         </div>
 
-        {/* 🔥 MODE SWITCH */}
-        <div className="flex gap-2 mb-4">
+        {/* SWITCH */}
+        <div className="flex gap-3 mb-5">
           <button
             onClick={() => setMode("all")}
-            className={`px-4 py-2 rounded-lg border transition ${
+            className={`px-5 py-2.5 rounded-xl font-medium transition ${
               mode === "all"
-                ? "bg-black text-white"
-                : "bg-white text-black hover:bg-black hover:text-white"
+                ? "bg-blue-700 text-white shadow-md"
+                : "bg-white border border-blue-100 text-slate-700 hover:bg-blue-50"
             }`}
           >
             Tous les posts
@@ -90,10 +100,10 @@ export default function Feed() {
 
           <button
             onClick={() => setMode("following")}
-            className={`px-4 py-2 rounded-lg border transition ${
+            className={`px-5 py-2.5 rounded-xl font-medium transition ${
               mode === "following"
-                ? "bg-black text-white"
-                : "bg-white text-black hover:bg-black hover:text-white"
+                ? "bg-blue-700 text-white shadow-md"
+                : "bg-white border border-blue-100 text-slate-700 hover:bg-blue-50"
             }`}
           >
             Suivis
@@ -106,17 +116,23 @@ export default function Feed() {
           dataLength={posts.length}
           next={() => chargerPosts(mode)}
           hasMore={page <= totalPages}
-          loader={<p className="text-center py-4">Chargement...</p>}
+          loader={
+            <p className="text-center py-6 text-slate-500">
+              Chargement...
+            </p>
+          }
         >
-          {posts.map((post) => (
-            <PostCard key={post._id} post={post} />
-          ))}
+          <div className="space-y-5">
+            {posts.map((post) => (
+              <PostCard key={post._id} post={post} />
+            ))}
+          </div>
         </InfiniteScroll>
 
         {!chargement && posts.length === 0 && (
-          <p className="text-center text-gray-500 mt-10">
+          <div className="bg-white border border-blue-100 rounded-2xl p-8 text-center text-slate-500 mt-10">
             Aucun post à afficher
-          </p>
+          </div>
         )}
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/auth.store";
+import "./Connexion.css";
 
 export default function Connexion() {
   const navigate = useNavigate();
@@ -16,47 +17,44 @@ export default function Connexion() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-100">
-      <form
-        onSubmit={soumettre}
-        className="w-full max-w-md bg-white rounded-xl shadow p-6 space-y-4"
-      >
-        <h1 className="text-2xl font-bold">Connexion</h1>
+  <div className="connexion-page">
+    <form onSubmit={soumettre} className="connexion-card">
+      <div className="connexion-header">
+        <h1>Connexion</h1>
+        <p>Connectez-vous à votre compte</p>
+      </div>
 
+      <div className="connexion-input-group">
         <input
-          className="w-full border rounded-lg p-2"
           placeholder="Identifiant (email ou username)"
           value={identifiant}
           onChange={(e) => setIdentifiant(e.target.value)}
           type="text"
           required
         />
+      </div>
 
+      <div className="connexion-input-group">
         <input
-          className="w-full border rounded-lg p-2"
           placeholder="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           type="password"
           required
         />
+      </div>
 
-        {erreur && <p className="text-sm text-red-600">{erreur}</p>}
+      {erreur && <p className="connexion-erreur">{erreur}</p>}
 
-        <button
-          className="w-full bg-black text-white rounded-lg p-2 disabled:opacity-50"
-          disabled={chargement}
-        >
-          {chargement ? "Connexion..." : "Se connecter"}
-        </button>
+      <button disabled={chargement} className="connexion-btn">
+        {chargement ? "Connexion..." : "Se connecter"}
+      </button>
 
-        <p className="text-sm">
-          Pas de compte ?{" "}
-          <Link className="underline" to="/inscription">
-            Inscription
-          </Link>
-        </p>
-      </form>
-    </div>
-  );
+      <p className="connexion-footer">
+        Pas de compte ?{" "}
+        <Link to="/inscription">Inscription</Link>
+      </p>
+    </form>
+  </div>
+);
 }
