@@ -2,6 +2,9 @@ import { Router } from "express";
 import { authentifier } from "../middlewares/authentification.middleware.js";
 import { suivreUtilisateur, nePlusSuivreUtilisateur, listerFollowers, listerFollowing } from "../controleurs/utilisateurs.controleur.js";
 import { rechercherUtilisateurs, profilPublic } from "../controleurs/utilisateurs.controleur.js";
+import { modifierProfil } from "../controleurs/utilisateurs.controleur.js";
+import { schemaModifierProfil } from "../validations/user.validation.js";
+import { valider } from "../middlewares/validation.middleware.js";
 
 export const routesUtilisateurs = Router();
 
@@ -13,4 +16,11 @@ routesUtilisateurs.get("/users/:id/following", authentifier, listerFollowing);
 
 routesUtilisateurs.get("/users", authentifier, rechercherUtilisateurs);
 routesUtilisateurs.get("/users/:id", authentifier, profilPublic);
+
+routesUtilisateurs.put(
+  "/users/me",
+  authentifier,
+  valider(schemaModifierProfil),
+  modifierProfil
+);
 

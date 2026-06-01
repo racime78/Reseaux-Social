@@ -78,4 +78,24 @@ export const useAuthStore = create((set, get) => ({
     localStorage.removeItem("token");
     set({ token: null, utilisateur: null, erreur: null });
   },
+
+  modifierProfil: async (data) => {
+  try {
+    const res = await modifierProfilAPI(data);
+
+    set((state) => ({
+      utilisateur: {
+        ...state.utilisateur,
+        utilisateur: res.data.utilisateur
+      }
+    }));
+
+    return { ok: true, message: res.data.message };
+  } catch (e) {
+    return {
+      ok: false,
+      message: e?.response?.data?.message || "Erreur"
+    };
+  }
+},
 }));

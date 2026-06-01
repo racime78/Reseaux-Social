@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { User } from "../modeles/utilisateur.modele.js";
 import { Post } from "../modeles/post.modele.js";
-
+import bcrypt from "bcrypt";
 
 export async function suivreUtilisateur(req, res, next) {
   try {
@@ -160,6 +160,42 @@ export async function profilPublic(req, res, next) {
     });
   } catch (e) {
     console.error("ERREUR profilPublic :", e);
+    next(e);
+  }
+}
+
+export async function modifierProfil(req, res, next) {
+  try {
+    const userId = req.utilisateur.id;
+    const { username, email, password } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        succes: false,
+        message: "Utilisateur introuvable",
+      });
+    }
+
+    if (username) user.username = username.toLowerCase();
+    if (email) user.email = email.toLowerCase();
+
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      succes: true,
+      message: "Profil mis à jour",
+      utilisateur: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (e) {
     next(e);
   }
 }

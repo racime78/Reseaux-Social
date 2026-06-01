@@ -24,3 +24,8 @@ export async function nePlusSuivreUtilisateur(id) {
   const { data } = await api.delete(`/users/${id}/unfollow`);
   return data;
 }
+
+export async function modifierProfil(data) {
+  const { data: res } = await api.put("/users/me", data);
+  return res;
+}

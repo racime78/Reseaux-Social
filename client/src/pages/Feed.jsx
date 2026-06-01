@@ -47,7 +47,7 @@ export default function Feed() {
     <div className="min-h-screen bg-white">
       <div className="max-w-2xl mx-auto px-4 py-6">
         
-        {/* HEADER */}
+        
         <div className="bg-white border border-blue-100 rounded-3xl shadow-sm p-5 mb-5">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
@@ -80,12 +80,12 @@ export default function Feed() {
           </div>
         </div>
 
-        {/* SEARCH */}
+     
         <div className="mb-5">
           <SearchBar />
         </div>
 
-        {/* SWITCH */}
+        
         <div className="flex gap-3 mb-5">
           <button
             onClick={() => setMode("all")}
